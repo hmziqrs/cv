@@ -1,0 +1,184 @@
+"use client";
+import { useEffect, useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { useScroll } from "@react-three/drei";
+
+const COLORS = [
+  "#FFFFFF", // pure white
+  "#B3E0FF", // soft light blue
+  "#FFD7E6", // soft light pink
+  "#E6D0FF", // soft light purple
+  "#FFE9C7", // warm white
+  "#8AB4F8", // bright blue
+] as const;
+
+const STAR_COUNT = 200;
+const BASE_STAR_SIZE = { min: 0.02, max: 0.06 };
+const BASE_STAR_SPEED = { min: 0.01, max: 0.02 };
+
+interface StarProps {
+  position: [number, number, number];
+  color: string;
+  size: number;
+}
+
+const Star = ({ position, color, size }: StarProps) => {
+  return (
+    <mesh position={position}>
+      <circleGeometry args={[size, 32]} />
+      <meshBasicMaterial
+        color={color}
+        transparent
+        opacity={0.8}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
+  );
+};
+
+const StarField = () => {
+  const scroll = useScroll();
+  const speedMultiplier = useRef(1);
+  const lastScrollY = useRef(0);
+
+  // Create initial star data
+  const stars = useMemo(() => {
+    return Array.from({ length: STAR_COUNT }, () => ({
+      position: [
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+      ],
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      size: THREE.MathUtils.randFloat(BASE_STAR_SIZE.min, BASE_STAR_SIZE.max),
+      speed: THREE.MathUtils.randFloat(
+        BASE_STAR_SPEED.min,
+        BASE_STAR_SPEED.max,
+      ),
+      angle: Math.random() * Math.PI * 2,
+    }));
+  }, []);
+
+  const starsRef = useRef(stars);
+
+  useFrame((state) => {
+    // Update speed multiplier based on scroll
+    const currentScrollY = scroll.offset;
+    const scrollDelta = currentScrollY - lastScrollY.current;
+
+    if (scrollDelta > 0) {
+      speedMultiplier.current = 5;
+    } else if (scrollDelta < 0) {
+      speedMultiplier.current = 0.8;
+    } else {
+      speedMultiplier.current = 1;
+    }
+
+    lastScrollY.current = currentScrollY;
+
+    // Update star positions
+    starsRef.current.forEach((star: any) => {
+      star.position[0] +=
+        Math.cos(star.angle) * star.speed * speedMultiplier.current;
+      star.position[1] +=
+        Math.sin(star.angle) * star.speed * speedMultiplier.current;
+
+      // Reset position if star goes off screen
+      if (
+        Math.abs(star.position[0]) > 5 ||
+        Math.abs(star.position[1]) > 5 ||
+        Math.abs(star.position[2]) > 5
+      ) {
+        star.position = [
+          (Math.random() - 0.5) * 0.5,
+          (Math.random() - 0.5) * 0.5,
+          (Math.random() - 0.5) * 0.5,
+        ];
+      }
+    });
+  });
+
+  return (
+    <>
+      {starsRef.current.map((star: any, index: number) => (
+        <Star
+          key={index}
+          position={star.position as [number, number, number]}
+          color={star.color}
+          size={star.size}
+        />
+      ))}
+      <Nebula />
+    </>
+  );
+};
+
+// Simple nebula effect using points
+const Nebula = () => {
+  const points = useMemo(() => {
+    const positions = [];
+    const colors = [];
+    const color = new THREE.Color();
+
+    for (let i = 0; i < 1000; i++) {
+      positions.push(
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+      );
+
+      color.setHSL(Math.random() * 0.2 + 0.5, 0.7, 0.4);
+      colors.push(color.r, color.g, color.b);
+    }
+
+    return {
+      positions: new Float32Array(positions),
+      colors: new Float32Array(colors),
+    };
+  }, []);
+
+  return (
+    <points>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={points.positions.length / 3}
+          array={points.positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={points.colors.length / 3}
+          array={points.colors}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.1}
+        vertexColors
+        transparent
+        opacity={0.5}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+};
+
+export const StarFieldScene = () => {
+  return (
+    <Canvas
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: -1,
+      }}
+      camera={{ position: [0, 0, 5] }}
+    >
+      <StarField />
+    </Canvas>
+  );
+};

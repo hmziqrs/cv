@@ -48,7 +48,7 @@ jobs:
           cp public/files/hmziqrs-dark-cv.pdf out/files/hmziqrs-dark-cv.pdf
           cp public/files/hmziqrs-light-cv.jpg out/files/hmziqrs-light-cv.jpg
           cp public/files/hmziqrs-light-cv.pdf out/files/hmziqrs-light-cv.pdf
-      - name: Deploy
+      - name: Deploy cloudflare pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
