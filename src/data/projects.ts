@@ -32,7 +32,7 @@ export const projects = [
       {
         label: "Web",
         icon: Globe,
-        link: "https://flutter-ui-challenges-hgl.web.app/",
+        link: "https://flutter-uis.hmziq.xyz/",
       },
     ],
     skills: [],
@@ -60,7 +60,7 @@ export const projects = [
       {
         label: "Web",
         icon: Globe,
-        link: "https://invmovieconcept1.web.app/",
+        link: "https://movieui.hmziq.xyz",
       },
     ],
     skills: [],
@@ -85,8 +85,37 @@ export const projects = [
         icon: SiGithub,
         link: "https://github.com/hmziqrs/react-native-loop-game",
       },
+      {
+        label: "Web",
+        icon: Globe,
+        link: "https://rnloop.hmziq.xyz",
+      },
     ],
     skills: [],
+  },
+  {
+    name: "Gandalf",
+    contribution: "Mobile App",
+    type: "Open Source",
+    thumbnail: "/projects/gandalf.jpg",
+    description: [],
+    buttons: [
+      {
+        label: "Google Play",
+        icon: SiGoogleplay,
+        link: "https://play.google.com/store/apps/details?id=com.onemdev.gandalf",
+      },
+      {
+        label: "Github",
+        icon: SiGithub,
+        link: "https://github.com/hmziqrs/gandlaf-sax",
+      },
+      {
+        label: "Web",
+        icon: Globe,
+        link: "https://gandalf.hmziq.xyz",
+      },
+    ],
   },
   {
     name: "Golang minesweeper",
