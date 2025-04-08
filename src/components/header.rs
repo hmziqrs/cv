@@ -12,7 +12,7 @@ use hmziq_dioxus_free_icons::{Icon, IconShape};
 pub trait IconWithExtra: IconShape + Clone + PartialEq {}
 impl<T> IconWithExtra for T where T: IconShape + Clone + PartialEq {}
 
-enum SocialLinkIcon {
+pub enum SocialLinkIcon {
     Gmail,
     Telegram,
     X,
@@ -21,7 +21,7 @@ enum SocialLinkIcon {
 
 pub struct SocialLink {
     pub href: String,
-    pub icon: SocialLinkIcon,
+    pub icon: Element,
     pub label: String,
     pub target: Option<String>,
 }
@@ -41,25 +41,29 @@ pub fn get_header() -> Header {
         links: vec![
             SocialLink {
                 href: "mailto:hmziqrs@gmail.com".to_string(),
-                icon: SocialLinkIcon::Gmail,
+                icon: rsx!{ Icon { icon: SiGmail } },
+                // icon: SocialLinkIcon::Gmail,
                 label: "hmziqrs@gmail.com".to_string(),
                 target: None,
             },
             SocialLink {
                 href: "https://t.me/hmziqrs".to_string(),
-                icon: SocialLinkIcon::Telegram,
+                icon: rsx!{ Icon { icon: SiTelegram } },
+                // icon: SocialLinkIcon::Telegram,
                 label: "@hmziqrs".to_string(),
                 target: None,
             },
             SocialLink {
                 href: "https://x.com/hmziqrs".to_string(),
-                icon: SocialLinkIcon::X,
+                icon: rsx!{ Icon { icon: SiX } },
+                // icon: SocialLinkIcon::X,
                 label: "@hmziqrs".to_string(),
                 target: None,
             },
             SocialLink {
                 href: "https://www.linkedin.com/in/hmziqrs".to_string(),
-                icon: SocialLinkIcon::Linkedin,
+                icon: rsx!{ Icon { icon: LdGlobe } },
+                // icon: SocialLinkIcon::Linkedin,
                 label: "linkedin/hmziqrs".to_string(),
                 target: Some("_linkedin".to_string()),
             },
@@ -101,19 +105,23 @@ pub fn AppHeader() -> Element {
                 div { class: "flex flex-row gap-4 flex-wrap",
                     {header.links.iter().map(|link| {
                         let target = link.target.as_deref().unwrap_or("_blank");
-                        let icon_component = match link.icon {
-                            SocialLinkIcon::Gmail => rsx! { Icon { width: 30, height: 30, icon: SiGmail {} } },
-                            SocialLinkIcon::Telegram => rsx! { Icon { width: 30, height: 30, icon: SiTelegram {} } },
-                            SocialLinkIcon::X => rsx! { Icon { width: 30, height: 30, icon: SiX {} } },
-                            SocialLinkIcon::Linkedin => rsx! { Icon { width: 30, height: 30, icon: LdGlobe {} } },
-                        };
+                        // let icon_component = match link.icon {
+                        //     SocialLinkIcon::Gmail => rsx! { Icon { icon: SiGmail {} } },
+                        //     SocialLinkIcon::Telegram => rsx! { Icon { icon: SiTelegram {} } },
+                        //     SocialLinkIcon::X => rsx! { Icon { icon: SiX {} } },
+                        //     SocialLinkIcon::Linkedin => rsx! { Icon { icon: LdGlobe {} } },
+                        // };
                         rsx! {
                             a {
                                 key: "{link.href}",
                                 href: "{link.href}",
                                 target: "{target}",
                                 class: "flex items-center gap-3 px-6 py-3 bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-md transition-colors duration-300",
-                                {icon_component}
+                                div {
+                                    class: "w-4",
+                                    // class: "[&>svg]:h-2 [&>svg]:w-2",
+                                    {link.icon.clone()}
+                                }
                                 p { class: "font-medium text-sm",
                                     "{link.label}"
                                 }

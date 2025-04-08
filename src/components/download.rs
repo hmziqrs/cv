@@ -1,27 +1,38 @@
-use dioxus::prelude::*;
-
-const DOWNLOADS: &[Download] = &[
-    Download {
-        label: "Light PDF",
-        filename: "/hmziqrs-light-cv.pdf",
-    },
-    Download {
-        label: "Dark PDF",
-        filename: "/hmziqrs-dark-cv.pdf",
-    },
-    Download {
-        label: "Light JPEG",
-        filename: "/hmziqrs-light-cv.jpg",
-    },
-    Download {
-        label: "Dark JPEG",
-        filename: "/hmziqrs-dark-cv.jpg",
-    },
-];
+use dioxus::{html::col::span, prelude::*};
+use hmziq_dioxus_free_icons::{
+    icons::ld_icons::{LdFileImage, LdFileText},
+    Icon,
+};
 
 struct Download {
-    label: &'static str,
-    filename: &'static str,
+    label: String,
+    filename: String,
+    icon: Element,
+}
+
+fn get_download() -> Vec<Download> {
+    vec![
+        Download {
+            label: "PDF (light mode)".to_string(),
+            filename: "/hmziqrs-light-cv.pdf".to_string(),
+            icon: rsx! { Icon{ icon: LdFileText }},
+        },
+        Download {
+            label: "PDF (dark mode)".to_string(),
+            filename: "/hmziqrs-dark-cv.pdf".to_string(),
+            icon: rsx! { Icon{ icon: LdFileText }},
+        },
+        Download {
+            label: "JPEG (light mode)".to_string(),
+            filename: "/hmziqrs-light-cv.pdf".to_string(),
+            icon: rsx! { Icon{ icon: LdFileImage }},
+        },
+        Download {
+            label: "JPEG (dark mode)".to_string(),
+            filename: "/hmziqrs-dark-cv.pdf".to_string(),
+            icon: rsx! { Icon{ icon: LdFileImage }},
+        },
+    ]
 }
 
 pub fn AppDownload() -> Element {
@@ -38,7 +49,7 @@ pub fn AppDownload() -> Element {
                 div {
                     class: "flex flex-row flex-wrap gap-4",
                     {
-                        DOWNLOADS.iter().map(|download| {
+                        get_download().iter().map(|download| {
                             rsx! {
                                 a {
                                     key: "{download.filename}",
@@ -52,8 +63,9 @@ pub fn AppDownload() -> Element {
                                         rounded-md transition-colors duration-300",
 
                                     // Empty div instead of an icon
-                                    div {
-                                        class: "sm:w-4 w-3.5"
+                                    span {
+                                        class: "sm:w-4 w-3.5",
+                                        {download.icon.clone()}
                                     }
 
                                     span {
