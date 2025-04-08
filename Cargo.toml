@@ -7,6 +7,10 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.40"
 dioxus = { version = "0.6.0", features = ["router", "fullstack"] }
+hmziq-dioxus-free-icons = { version = "0.9.1", features = [
+    "simple-icons",
+    "lucide",
+] }
 
 [features]
 default = ["web"]

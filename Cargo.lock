@@ -804,6 +804,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "dioxus",
+ "hmziq-dioxus-free-icons",
 ]
 
 [[package]]
@@ -2226,6 +2227,15 @@ name = "hex"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
+
+[[package]]
+name = "hmziq-dioxus-free-icons"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aa1abea762d9861df42af4e9431c56295a663a563885a570413a754fbed2f5ab"
+dependencies = [
+ "dioxus",
+]
 
 [[package]]
 name = "home"
