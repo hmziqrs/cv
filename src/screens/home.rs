@@ -1,6 +1,8 @@
 use dioxus::prelude::*;
 
-use crate::components::{AppDownload, AppExperience, AppHeader, AppProject, AppSkills, AppSpacer};
+use crate::components::{
+    AppDownload, AppExperience, AppFooter, AppHeader, AppProject, AppSkills, AppSpacer,
+};
 
 #[component]
 pub fn HomeScreen() -> Element {
@@ -29,5 +31,7 @@ pub fn HomeScreen() -> Element {
         AppProject {}
         AppSpacer { break_after: true }
         AppExperience {}
+        AppSpacer {}
+        AppFooter {}
     }
 }
