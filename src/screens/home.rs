@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::components::{AppHeader, AppSkills};
+use crate::components::{AppDownload, AppHeader, AppSkills};
 
 #[component]
 pub fn HomeScreen() -> Element {
@@ -18,6 +18,14 @@ pub fn HomeScreen() -> Element {
             class: "skills-sections",
             AppSkills {}
         }
+        SectionSpacer {}
+        section {
+            id: "download",
+            aria_label: "Download section",
+            class: "download-section",
+            AppDownload {}
+        }
+        SectionSpacer {}
     }
 }
 
