@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::components::{AppDownload, AppHeader, AppSkills, AppSpacer};
+use crate::components::{AppDownload, AppHeader, AppProject, AppSkills, AppSpacer};
 
 #[component]
 pub fn HomeScreen() -> Element {
@@ -25,8 +25,8 @@ pub fn HomeScreen() -> Element {
             class: "download-section",
             AppDownload {}
         }
-        AppSpacer {
-            break_after: true
-        }
+        AppSpacer { break_after: true }
+        AppProject {}
+        AppSpacer { break_after: true }
     }
 }

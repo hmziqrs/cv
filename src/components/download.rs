@@ -1,4 +1,4 @@
-use dioxus::{html::col::span, prelude::*};
+use dioxus::prelude::*;
 use hmziq_dioxus_free_icons::{
     icons::ld_icons::{LdFileImage, LdFileText},
     Icon,
