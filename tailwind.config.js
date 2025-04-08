@@ -5,5 +5,16 @@ module.exports = {
   theme: {
     extend: {},
   },
+  theme: {
+    extend: {
+      screens: {
+        xs: "410px",
+      },
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
+    },
+  },
   plugins: [],
 };
