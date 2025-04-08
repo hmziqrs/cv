@@ -75,6 +75,7 @@ pub fn AppHeader() -> Element {
                     h1 { class: "text-3xl font-semibold text-zinc-800 dark:text-zinc-100",
                         "{header.name}"
                     }
+                    div { class: "h-1" }
                     h3 { class: "font-semibold font-mono text-zinc-700 dark:text-zinc-300",
                         "{header.title}"
                     }
