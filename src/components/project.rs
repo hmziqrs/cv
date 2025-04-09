@@ -11,7 +11,7 @@ pub struct Project {
     pub contribution: String,
     pub project_type: String,
     pub description: Vec<String>,
-    pub thumbnail: String,
+    pub thumbnail: Asset,
     pub buttons: Vec<ProjectButton>,
 }
 
@@ -35,7 +35,7 @@ pub fn get_projects() -> Vec<Project> {
                 "Basic internationalization. ".to_string(),
                 "Light and Dark theme support.".to_string(),
             ],
-            thumbnail: "/projects/flutter-ui-designs.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/flutter-ui-designs.jpg"),
             buttons: vec![
                 ProjectButton {
                     label: "Google Play".to_string(),
@@ -58,7 +58,7 @@ pub fn get_projects() -> Vec<Project> {
             name: "Flutter movie concept".to_string(),
             contribution: "Mobile App".to_string(),
             project_type: "Open Source".to_string(),
-            thumbnail: "/projects/movie-concept.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/movie-concept.jpg"),
             description: vec![
                 "Features complex parallax animations.".to_string(),
                 "Scales on desktop, tablets & browser.".to_string(),
@@ -85,7 +85,7 @@ pub fn get_projects() -> Vec<Project> {
             name: "React Native Loop".to_string(),
             contribution: "Mobile App".to_string(),
             project_type: "Open Source".to_string(),
-            thumbnail: "/projects/react-native-loop.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/react-native-loop.jpg"),
             description: vec![
                 "Features complex parallax animations.".to_string(),
                 "Scales on desktop, tablets & browser.".to_string(),
@@ -112,7 +112,7 @@ pub fn get_projects() -> Vec<Project> {
             name: "Gandalf".to_string(),
             contribution: "Mobile App".to_string(),
             project_type: "Open Source".to_string(),
-            thumbnail: "/projects/gandalf.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/gandalf.jpg"),
             description: vec![],
             buttons: vec![
                 ProjectButton {
@@ -136,7 +136,7 @@ pub fn get_projects() -> Vec<Project> {
             name: "Golang minesweeper".to_string(),
             contribution: "CLI App".to_string(),
             project_type: "Open Source".to_string(),
-            thumbnail: "/projects/golang-minesweeper.gif".to_string(),
+            thumbnail: asset!("/assets/projects/golang-minesweeper.gif"),
             description: vec![
                 "Features complex parallax animations.".to_string(),
                 "Scales on desktop, tablets & browser.".to_string(),
@@ -157,7 +157,7 @@ pub fn get_projects() -> Vec<Project> {
                 "Features complex parallax animations.".to_string(),
                 "Scales on desktop, tablets & browser.".to_string(),
             ],
-            thumbnail: "/projects/my-cv.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/my-cv.jpg"),
             buttons: vec![
                 ProjectButton {
                     label: "Github".to_string(),
@@ -175,7 +175,7 @@ pub fn get_projects() -> Vec<Project> {
             name: "Wheelbees".to_string(),
             contribution: "Full Stack".to_string(),
             project_type: "Product".to_string(),
-            thumbnail: "/projects/wheelbees.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/wheelbees.jpg"),
             description: vec![],
             buttons: vec![
                 ProjectButton {
@@ -199,7 +199,7 @@ pub fn get_projects() -> Vec<Project> {
             name: "QuestSocial".to_string(),
             contribution: "Full Stack".to_string(),
             project_type: "Product".to_string(),
-            thumbnail: "/projects/quest.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/quest.jpg"),
             description: vec![],
             buttons: vec![
                 ProjectButton {
@@ -213,7 +213,7 @@ pub fn get_projects() -> Vec<Project> {
             name: "Mixfame".to_string(),
             contribution: "Mobile App".to_string(),
             project_type: "Product".to_string(),
-            thumbnail: "/projects/mixfame.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/mixfame.jpg"),
             description: vec![],
             buttons: vec![
                 ProjectButton {
@@ -237,7 +237,7 @@ pub fn get_projects() -> Vec<Project> {
             name: "Peekaboo Guru".to_string(),
             contribution: "Full Stack".to_string(),
             project_type: "Product".to_string(),
-            thumbnail: "/projects/peekaboo-guru.webp".to_string(),
+            thumbnail: asset!("/assets/projects/peekaboo-guru.webp"),
             description: vec![],
             buttons: vec![
                 ProjectButton {
@@ -265,7 +265,7 @@ pub fn get_projects() -> Vec<Project> {
                 "Features complex parallax animations.".to_string(),
                 "Scales on desktop, tablets & browser.".to_string(),
             ],
-            thumbnail: "/projects/sasta-ticket.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/sasta-ticket.jpg"),
             buttons: vec![
                 ProjectButton {
                     label: "Google Play".to_string(),
@@ -292,7 +292,7 @@ pub fn get_projects() -> Vec<Project> {
                 "Features complex parallax animations.".to_string(),
                 "Scales on desktop, tablets & browser.".to_string(),
             ],
-            thumbnail: "/projects/grow-more.jpg".to_string(),
+            thumbnail: asset!("/assets/projects/grow-more.jpg"),
             buttons: vec![
                 ProjectButton {
                     label: "Google Play".to_string(),
