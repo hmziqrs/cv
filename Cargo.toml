@@ -48,8 +48,8 @@ inherits = "dev"
 inherits = "dev"
 
 [[bin]]
-name = "chrome"
-path = "scripts/chrome.rs"
+name = "stripper"
+path = "scripts/stripper.rs"
 
 [[bin]]
 name = "chrome_capture"
@@ -62,3 +62,5 @@ headless_chrome = { git = "https://github.com/rust-headless-chrome/rust-headless
 axum = "0.8.3"
 tokio = { version = "1.44.2", features = ["full"] }
 tower-http = { version = "0.6.2", features = ["fs"] }
+scraper = "0.23.1"
+cargo_toml = "0.22.1"
