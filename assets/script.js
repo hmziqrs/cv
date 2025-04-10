@@ -1,13 +1,11 @@
 window.toggleJpegs = function () {
-  const jpegs = document.getElementsByClassName("jp");
+  const jpegs = Array.from(document.getElementsByClassName("jpeg"));
+  jpegs.forEach((element) => {
+    element.classList.toggle("hidden");
+  });
 };
 
-var html_node = document.getElementsByTagName("html")[0];
-
 window.toggleTheme = function () {
-  if (html_node.classList.contains("dark")) {
-    html_node.classList.remove("dark");
-  } else {
-    html_node.classList.add("dark");
-  }
+  const html_node = document.getElementsByTagName("html")[0];
+  html_node.classList.toggle("dark");
 };

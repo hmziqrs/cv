@@ -5,8 +5,6 @@ mod metadata;
 pub mod router;
 pub mod screens;
 
-const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
-
 fn main() {
     // dioxus::launch(App);
     dioxus::LaunchBuilder::new()
@@ -50,7 +48,9 @@ fn App() -> Element {
             rel: "stylesheet",
             href: "https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400..600&family=Geist:wght@400..600&display=swap"
         }
-        document::Link { rel: "stylesheet", href: TAILWIND_CSS }
+        document::Link {
+            rel: "stylesheet", href: asset!("/assets/tailwind.css")
+        }
         document::Link {
             rel: "apple-touch-icon",
             sizes: "180x180",
@@ -73,7 +73,8 @@ fn App() -> Element {
             href: asset!("/public/fav/site.webmanifest")
         }
         document::Script {
-            src: asset!("/assets/script.js")
+            src: asset!("/assets/script.js"),
+            r#type: "text/javascript"
         }
 
         Router::<crate::router::Route> {}

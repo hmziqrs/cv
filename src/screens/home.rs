@@ -20,7 +20,7 @@ pub fn HomeScreen() -> Element {
             class: "skills-sections",
             AppSkills {}
         }
-        AppSpacer {}
+        AppSpacer { jpeg_mode: true }
         section {
             id: "download",
             aria_label: "Download section",
@@ -31,7 +31,7 @@ pub fn HomeScreen() -> Element {
         AppProject {}
         AppSpacer { break_after: true }
         AppExperience {}
-        AppSpacer {}
+        AppSpacer { jpeg_mode: true }
         AppFooter {}
     }
 }
