@@ -1,5 +1,5 @@
 use axum::Router;
-use headless_chrome::types::{Bounds, PrintToPdfOptions};
+use headless_chrome::types::PrintToPdfOptions;
 use headless_chrome::{protocol::cdp::Page, Browser, LaunchOptionsBuilder};
 use std::collections::HashMap;
 use std::net::SocketAddr;
@@ -48,8 +48,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if !files_dir.exists() {
         fs::create_dir_all(files_dir)?;
     }
-    
-    
 
     // Launch browser
     let options = LaunchOptionsBuilder::default()
@@ -68,7 +66,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Page loaded");
 
     // Capture dark theme
-    capture(&tab, true)?;
+    capture_pdf(&tab, true)?;
     println!("Captured dark theme");
 
     // Switch to light theme
@@ -78,8 +76,33 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     sleep(4000);
 
     // Capture light theme
-    capture(&tab, false)?;
+    capture_pdf(&tab, false)?;
     println!("Captured light theme");
+
+    let jpeg_height = get_content_height(&tab)?;
+
+    tab.close(true)?;
+
+    let jpeg_options = LaunchOptionsBuilder::default()
+        .headless(true)
+        .window_size(Some((1280, jpeg_height as u32)))
+        .build()?;
+
+    let jpeg_browser = Browser::new(jpeg_options)?;
+
+    let jpeg_tab = jpeg_browser.new_tab()?;
+
+    jpeg_tab.navigate_to(url)?.wait_until_navigated()?;
+    println!("Page loaded");
+
+    jpeg_tab.evaluate("toggleJpegs();", false)?;
+    sleep(1000);
+
+    capture_jpeg(&jpeg_tab, true)?;
+
+    jpeg_tab.evaluate("toggleTheme();", false)?;
+
+    capture_jpeg(&jpeg_tab, false)?;
 
     // Shutdown the server if it was started
     if let Some(tx) = server_shutdown_tx {
@@ -151,7 +174,7 @@ fn sleep(ms: u64) {
     thread::sleep(std::time::Duration::from_millis(ms));
 }
 
-fn capture(tab: &headless_chrome::Tab, dark: bool) -> Result<(), Box<dyn std::error::Error>> {
+fn capture_pdf(tab: &headless_chrome::Tab, dark: bool) -> Result<(), Box<dyn std::error::Error>> {
     let theme = if dark { "dark" } else { "light" };
 
     // Create PDF
@@ -169,47 +192,35 @@ fn capture(tab: &headless_chrome::Tab, dark: bool) -> Result<(), Box<dyn std::er
     fs::write(format!("public/files/hmziqrs-{}-cv.pdf", theme), pdf_data)?;
     println!("{} pdf saved", theme);
 
-    let pre_toggle_height = tab
-        .evaluate("document.body.offsetHeight", false)?
-        .value
-        .map(|v| v.as_f64())
-        .unwrap()
-        .unwrap();
-
     sleep(1000);
 
-    // Toggle JPEG mode
+    Ok(())
+}
+
+fn get_content_height(tab: &headless_chrome::Tab) -> Result<f64, Box<dyn std::error::Error>> {
     tab.evaluate("window.toggleJpegs();", false)?;
 
     sleep(1000);
 
-    let post_toggle_height = tab
+    // Toggle JPEG modez
+    let height = tab
         .evaluate("document.body.offsetHeight", false)?
         .value
         .map(|v| v.as_f64())
         .unwrap()
         .unwrap();
 
-    sleep(1000);
+    Ok(height)
+}
 
-    println!(
-        "pre_toggle_height pre:{:?} post:{:?}",
-        pre_toggle_height, post_toggle_height
-    );
-    println!("{} toggle start", theme);
-
-    let stat = tab.set_bounds(Bounds::Normal {
-        left: Some(0),
-        top: Some(0),
-        width: Some(1280.0),
-        height: Some(post_toggle_height),
-    })?;
+fn capture_jpeg(tab: &headless_chrome::Tab, dark: bool) -> Result<(), Box<dyn std::error::Error>> {
+    let theme = if dark { "dark" } else { "light" };
 
     // println!("bounds status {}", stat);
 
-    sleep(1000);
-
     let element = tab.find_element("html").unwrap();
+
+    sleep(1000);
 
     // Take screenshot
     let screenshot = element
@@ -221,11 +232,6 @@ fn capture(tab: &headless_chrome::Tab, dark: bool) -> Result<(), Box<dyn std::er
 
     fs::write(format!("public/files/hmziqrs-{}-cv.jpg", theme), screenshot)?;
     println!("{} jpeg saved", theme);
-
-    sleep(1000);
-    // Toggle JPEG mode again
-    tab.evaluate("window.toggleJpegs()", false)?;
-    println!("{} toggle end", theme);
 
     sleep(1000);
 
