@@ -31,3 +31,7 @@ inherits = "dev"
 
 [profile.android-dev]
 inherits = "dev"
+
+[[bin]]
+name = "chrome"
+path = "scripts/chrome.rs"
