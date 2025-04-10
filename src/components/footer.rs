@@ -188,10 +188,10 @@ pub fn AppFooter() -> Element {
                     }
 
                     // Copyright
-                    div { class: "text-sm font-mono text-center",
+                    div { class: "text-sm font-mono text-center text-zinc-600 dark:text-zinc-100",
                         "© {current_year} Hamza Iqbal. All rights reserved."
                     }
-                    div { class: "text-xs font-mono text-center",
+                    div { class: "text-xs font-mono text-center text-zinc-600 dark:text-zinc-100",
                         "Updated on {last_updated}"
                     }
                 }

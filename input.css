@@ -13,11 +13,10 @@
         Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
-    }
+/* Removed system preference detection to allow manual theme control */
+.dark {
+    --background: #0a0a0a;
+    --foreground: #ededed;
 }
 
 html,
