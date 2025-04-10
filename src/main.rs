@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 
 pub mod components;
+mod metadata;
 pub mod router;
 pub mod screens;
 
@@ -35,6 +36,7 @@ fn main() {
 #[component]
 fn App() -> Element {
     rsx! {
+        metadata::Metadata {}
         document::Link {
             rel: "preconnect",
             href: "https://fonts.googleapis.com"

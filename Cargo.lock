@@ -805,6 +805,7 @@ dependencies = [
  "chrono",
  "dioxus",
  "hmziq-dioxus-free-icons",
+ "serde_json",
 ]
 
 [[package]]
