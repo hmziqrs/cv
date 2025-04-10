@@ -6,8 +6,9 @@
     --font-geist-sans: "Geist";
     --font-geist-mono: "Geist Mono";
     /* --font-geist-sans: "geistSans", "geistSans Fallback"; */
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
+    --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+    --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+        Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
