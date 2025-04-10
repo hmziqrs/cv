@@ -72,6 +72,9 @@ fn App() -> Element {
             rel: "manifest",
             href: asset!("/public/fav/site.webmanifest")
         }
+        document::Script {
+            src: asset!("/assets/script.js")
+        }
 
         Router::<crate::router::Route> {}
     }
