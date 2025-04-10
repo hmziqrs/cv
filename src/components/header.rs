@@ -1,6 +1,3 @@
-use std::ops::Deref;
-
-// use crate::data::header::{get_header, SocialIcon};
 use dioxus::prelude::*;
 
 // src/data/header.rs

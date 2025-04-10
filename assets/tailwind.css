@@ -303,6 +303,9 @@
   .grid {
     display: grid;
   }
+  .table {
+    display: table;
+  }
   .h-1 {
     height: calc(var(--spacing) * 1);
   }
@@ -342,8 +345,17 @@
   .flex-grow {
     flex-grow: 1;
   }
+  .border-collapse {
+    border-collapse: collapse;
+  }
+  .transform {
+    transform: var(--tw-rotate-x) var(--tw-rotate-y) var(--tw-rotate-z) var(--tw-skew-x) var(--tw-skew-y);
+  }
   .cursor-pointer {
     cursor: pointer;
+  }
+  .resize {
+    resize: both;
   }
   .list-outside {
     list-style-position: outside;
@@ -374,6 +386,9 @@
   }
   .justify-center {
     justify-content: center;
+  }
+  .gap-1 {
+    gap: calc(var(--spacing) * 1);
   }
   .gap-1\.5 {
     gap: calc(var(--spacing) * 1.5);
@@ -429,11 +444,17 @@
     border-style: var(--tw-border-style);
     border-width: 1px;
   }
+  .border-blue-700 {
+    border-color: var(--color-blue-700);
+  }
   .border-blue-700\/30 {
     border-color: color-mix(in srgb, oklch(48.8% 0.243 264.376) 30%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-blue-700) 30%, transparent);
     }
+  }
+  .border-gray-700 {
+    border-color: var(--color-gray-700);
   }
   .border-gray-700\/30 {
     border-color: color-mix(in srgb, oklch(37.3% 0.034 259.733) 30%, transparent);
@@ -441,11 +462,17 @@
       border-color: color-mix(in oklab, var(--color-gray-700) 30%, transparent);
     }
   }
+  .border-green-700 {
+    border-color: var(--color-green-700);
+  }
   .border-green-700\/30 {
     border-color: color-mix(in srgb, oklch(52.7% 0.154 150.069) 30%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-green-700) 30%, transparent);
     }
+  }
+  .border-orange-700 {
+    border-color: var(--color-orange-700);
   }
   .border-orange-700\/30 {
     border-color: color-mix(in srgb, oklch(55.3% 0.195 38.402) 30%, transparent);
@@ -453,17 +480,26 @@
       border-color: color-mix(in oklab, var(--color-orange-700) 30%, transparent);
     }
   }
+  .border-purple-700 {
+    border-color: var(--color-purple-700);
+  }
   .border-purple-700\/30 {
     border-color: color-mix(in srgb, oklch(49.6% 0.265 301.924) 30%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-purple-700) 30%, transparent);
     }
   }
+  .border-red-700 {
+    border-color: var(--color-red-700);
+  }
   .border-red-700\/30 {
     border-color: color-mix(in srgb, oklch(50.5% 0.213 27.518) 30%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-red-700) 30%, transparent);
     }
+  }
+  .border-teal-700 {
+    border-color: var(--color-teal-700);
   }
   .border-teal-700\/30 {
     border-color: color-mix(in srgb, oklch(51.1% 0.096 186.391) 30%, transparent);
@@ -527,6 +563,9 @@
   }
   .px-6 {
     padding-inline: calc(var(--spacing) * 6);
+  }
+  .py-0 {
+    padding-block: calc(var(--spacing) * 0);
   }
   .py-0\.5 {
     padding-block: calc(var(--spacing) * 0.5);
@@ -632,9 +671,16 @@
   .text-zinc-800 {
     color: var(--color-zinc-800);
   }
+  .underline {
+    text-decoration-line: underline;
+  }
   .antialiased {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  .outline {
+    outline-style: var(--tw-outline-style);
+    outline-width: 1px;
   }
   .transition-all {
     transition-property: all;
@@ -1168,6 +1214,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-geist-sans: "Geist";
+  --font-geist-mono: "Geist Mono";
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -1175,43 +1225,12 @@
     --foreground: #ededed;
   }
 }
+html, body {
+  font-family: var(--font-sans);
+}
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-}
-@property --tw-space-y-reverse {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-border-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
-@property --tw-font-weight {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-duration {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-scale-x {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-scale-y {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-scale-z {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
 }
 @property --tw-rotate-x {
   syntax: "*";
@@ -1238,21 +1257,60 @@ body {
   inherits: false;
   initial-value: skewY(0);
 }
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-font-weight {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-duration {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
-      --tw-space-y-reverse: 0;
-      --tw-border-style: solid;
-      --tw-font-weight: initial;
-      --tw-duration: initial;
-      --tw-scale-x: 1;
-      --tw-scale-y: 1;
-      --tw-scale-z: 1;
       --tw-rotate-x: rotateX(0);
       --tw-rotate-y: rotateY(0);
       --tw-rotate-z: rotateZ(0);
       --tw-skew-x: skewX(0);
       --tw-skew-y: skewY(0);
+      --tw-space-y-reverse: 0;
+      --tw-border-style: solid;
+      --tw-font-weight: initial;
+      --tw-outline-style: solid;
+      --tw-duration: initial;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
     }
   }
 }

@@ -3,6 +3,11 @@
 :root {
     --background: #ffffff;
     --foreground: #171717;
+    --font-geist-sans: "Geist";
+    --font-geist-mono: "Geist Mono";
+    /* --font-geist-sans: "geistSans", "geistSans Fallback"; */
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -12,8 +17,12 @@
     }
 }
 
+html,
+body {
+    font-family: var(--font-sans);
+}
+
 body {
     color: var(--foreground);
     background: var(--background);
-    font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
