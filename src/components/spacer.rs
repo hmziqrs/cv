@@ -12,7 +12,7 @@ pub struct AppSpacerProps {
 pub fn AppSpacer(props: AppSpacerProps) -> Element {
     rsx! {
         section {
-            class: format!("h-16 {} {}", if props.break_after { "print:h-12" } else { "print:h-80" }, if props.jpeg_mode { "jpeg" } else { "" }),
+            class: format!("h-16 {} {}", if props.break_after { "print:h-12" } else { "print:h-8" }, if props.jpeg_mode { "jpeg" } else { "" }),
             style: if props.break_after { "page-break-after: always" },
         }
     }
