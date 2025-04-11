@@ -10,5 +10,31 @@
         class="antialiased min-h-full flex flex-col dark:text-white text-black dark:bg-zinc-950 bg-white transition-colors duration-500"
     >
         <div id="main"></div>
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+            import {
+                getAnalytics,
+                logEvent,
+            } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+            import { getPerformance } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-performance.js";
+
+            const app = initializeApp({
+                apiKey: "API_KEY",
+                authDomain: "AUTH_DOMAIN",
+                projectId: "PROJECT_ID",
+                storageBucket: "STORAGE_BUCKET",
+                messagingSenderId: "MESSAGING_SENDER_ID",
+                appId: "APP_ID",
+                measurementId: "MEASUREMENT_ID",
+            });
+            const analytics = getAnalytics(app);
+            const performance = getPerformance(app);
+
+            logEvent("page_view", {
+                page_title: document.title,
+                page_path: window.location.pathname,
+                page_location: window.location.href,
+            });
+        </script>
     </body>
 </html>

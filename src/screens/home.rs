@@ -9,7 +9,6 @@ pub fn HomeScreen() -> Element {
     rsx! {
         main {
             class: "h-full",
-            role: "main",
             aria_label: "Portfolio content",
             AppHeader {}
             AppSpacer {}
