@@ -1,3 +1,4 @@
+use lightningcss::stylesheet::{ParserOptions, StyleSheet};
 use minify_html::{minify, Cfg};
 use regex::Regex;
 use std::error::Error;
@@ -39,15 +40,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         .parent()
         .ok_or("Failed to get parent directory of Cargo.toml")?;
 
-    // Construct path to index.html
-    let index_html_path = project_root
+    let public_root = project_root
         .join("target")
         .join("dx")
         .join(package_name)
         .join("release")
         .join("web")
-        .join("public")
-        .join("index.html");
+        .join("public");
+
+    // Construct path to index.html
+    let index_html_path = public_root.join("index.html");
+    let assets_dir = public_root.join("assets");
 
     // Read index.html
     match fs::read_to_string(&index_html_path) {
@@ -116,14 +119,46 @@ fn main() -> Result<(), Box<dyn Error>> {
             fs::write(&index_html_path, minified)?;
 
             println!("Successfully removed specified tags from index.html");
-
-            Ok(())
         }
-        Err(e) => Err(format!(
-            "Failed to read index.html at {}: {}",
-            index_html_path.display(),
-            e
-        )
-        .into()),
+        Err(e) => {
+            return Err(format!(
+                "Failed to read index.html at {}: {}",
+                index_html_path.display(),
+                e
+            )
+            .into());
+        }
     }
+
+    // for entry in fs::read_dir(assets_dir).unwrap() {
+    //     let entry = entry?;
+    //     let path = entry.path();
+    //     if path.is_file() {
+    //         let name = path.file_name().unwrap().to_string_lossy().to_string();
+
+    //         if name.starts_with("tailwind") && name.ends_with(".css") {
+    //             let css_content = fs::read_to_string(&path)?;
+
+    //             let mut stylesheet = StyleSheet::parse(
+    //                 &css_content,
+    //                 ParserOptions {
+    //                     filename: name,
+    //                     ..ParserOptions::default()
+    //                 },
+    //             )
+    //             .map_err(|e| format!("Failed to parse CSS: {:?}", e))
+    //             .unwrap();
+
+    //             stylesheet
+    //                 .minify(lightningcss::stylesheet::MinifyOptions {
+    //                     ..Default::default()
+    //                 })
+    //                 .map_err(|e| format!("Failed to minify CSS: {:?}", e))?;
+
+    //             fs::write(path, serde_json::to_string(&stylesheet).unwrap());
+    //         }
+    //     }
+    // }
+
+    Ok(())
 }

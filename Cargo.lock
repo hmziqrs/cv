@@ -1069,6 +1069,7 @@ dependencies = [
  "dtoa-short",
  "itoa 1.0.15",
  "phf 0.11.3",
+ "serde",
  "smallvec",
 ]
 
@@ -1115,6 +1116,7 @@ dependencies = [
  "headless_chrome",
  "hmziq-dioxus-free-icons",
  "kuchikiki",
+ "lightningcss",
  "minify-html",
  "regex",
  "scraper",
@@ -3313,6 +3315,7 @@ dependencies = [
  "rayon",
  "serde",
  "smallvec",
+ "static-self",
 ]
 
 [[package]]
@@ -4076,7 +4079,9 @@ dependencies = [
  "phf_codegen 0.11.3",
  "precomputed-hash",
  "rustc-hash 2.1.1",
+ "serde",
  "smallvec",
+ "static-self",
 ]
 
 [[package]]
@@ -5376,6 +5381,9 @@ name = "smallvec"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8917285742e9f3e1683f0a9c4e6b57960b7314d0b08d30d1ecd426713ee2eee9"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "socket2"
@@ -5435,6 +5443,28 @@ name = "stable_deref_trait"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
+
+[[package]]
+name = "static-self"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f6635404b73efc136af3a7956e53c53d4f34b2f16c95a15c438929add0f69412"
+dependencies = [
+ "indexmap 2.9.0",
+ "smallvec",
+ "static-self-derive",
+]
+
+[[package]]
+name = "static-self-derive"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5268c96d4b907c558a9a52d8492522d6c7b559651a5e1d8f2d551e461b9425d5"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
 
 [[package]]
 name = "static_assertions"

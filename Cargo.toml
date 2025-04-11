@@ -67,3 +67,4 @@ cargo_toml = "0.22.1"
 regex = "1.11.1"
 kuchikiki = "0.8.2"
 minify-html = "0.16.4"
+lightningcss = { version = "1.0.0-alpha.65", features = ["serde"] }
