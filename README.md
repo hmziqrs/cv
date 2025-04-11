@@ -27,12 +27,42 @@ cv/
 ├── screens/              # Page layouts
 │   ├── home.rs           # Main CV page
 │   └── mod.rs            # Screen exports
+├── scripts/              # Utility scripts
+│   ├── chrome_capture.rs # PDF/JPEG generation script
+│   ├── stripper.rs       # HTML/CSS optimization tool
+│   └── stripper.legacy   # Legacy HTML cleanup tool
 ├── router.rs             # URL routing
 ├── metadata.rs           # SEO metadata
 ├── main.rs               # Application entry point
 ├── public/               # Static assets
 └── assets/               # Compiled assets
 ```
+
+## Utility Scripts
+
+This project includes several utility scripts in the `scripts/` directory:
+
+### chrome_capture.rs
+
+A headless Chrome automation script that generates PDF and JPEG versions of the CV in both light and dark themes.
+
+- Automatically starts a local server when needed
+- Captures high-quality PDF files optimized for printing
+- Generates JPEG screenshots of the entire page
+- Supports different environments (local, dev, prod)
+
+### stripper.rs
+
+An optimization tool that prepares the generated HTML for production by:
+
+- Removing unnecessary hydration data and scripts
+- Cleaning up Dioxus-specific attributes
+- Minifying the final HTML output
+- Finding and optimizing CSS assets
+
+### stripper.legacy
+
+A legacy version of the HTML cleanup tool that uses regex patterns to remove specific tags from the generated HTML output.
 
 ## Technology Stack
 
