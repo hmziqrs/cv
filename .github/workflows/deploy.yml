@@ -5,8 +5,8 @@
 name: Deploy Rust CV to Pages
 
 on:
-  # push:
-  #   branches: ["master"]
+  push:
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -31,23 +31,21 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Install playwright
-        run: npx playwright install chromium
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: install node modules
+        run: bun install
+
+      - name: tailwind build
+        run: bun tailwind:build
 
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Set environment variables
-        run: echo $ENV_VARS | base64 --decode > .env
-
-      - name: Install Node.js dependencies
-        run: npm install
-
       - name: Install Dioxus CLI
         run: cargo install dioxus-cli
-
-      - name: Run Tailwind
-        run: npm run tailwind
 
       - name: Build static site
         run: dx build --platform web --release --ssg
@@ -61,10 +59,10 @@ jobs:
       - name: Copy CV files to build directory
         run: |
           mkdir -p target/dx/cv/release/web/public/files
-          cp public/files/hmziqrs-dark-cv.jpg target/dx/cv/release/web/public/files/
-          cp public/files/hmziqrs-dark-cv.pdf target/dx/cv/release/web/public/files/
-          cp public/files/hmziqrs-light-cv.jpg target/dx/cv/release/web/public/files/
-          cp public/files/hmziqrs-light-cv.pdf target/dx/cv/release/web/public/files/
+          cp public/files/hmziqrs-dark-cv.jpg target/dx/cv/release/web/public/files/hmziqrs-dark-cv.jpg
+          cp public/files/hmziqrs-dark-cv.pdf target/dx/cv/release/web/public/files/hmziqrs-dark-cv.pdf
+          cp public/files/hmziqrs-light-cv.jpg target/dx/cv/release/web/public/files/hmziqrs-light-cv.jpg
+          cp public/files/hmziqrs-light-cv.pdf target/dx/cv/release/web/public/files/hmziqrs-light-cv.pdf
 
       - name: Deploy cloudflare pages
         uses: cloudflare/wrangler-action@v3
@@ -103,6 +101,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     runs-on: ubuntu-latest
     needs: build
     steps:

@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "tailwind": "bunx --bun @tailwindcss/cli -i input.css -o assets/tailwind.css --watch"
+    "tailwind": "bunx --bun @tailwindcss/cli -i input.css -o assets/tailwind.css --watch",
+    "tailwind:build": "bunx --bun @tailwindcss/cli -i input.css -o assets/tailwind.css"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.0.17",
