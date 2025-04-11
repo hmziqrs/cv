@@ -28,10 +28,10 @@
                 measurementId: "G-ZLFZ3HEGX9",
             });
 
-            const analytics = getAnalytics(app);
-            const performance = getPerformance(app);
+            const analytics = await getAnalytics(app);
+            const performance = await getPerformance(app);
 
-            logEvent("page_view", {
+            logEvent(analytics, "page_view", {
                 page_title: document.title,
                 page_path: window.location.pathname,
                 page_location: window.location.href,
