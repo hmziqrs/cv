@@ -1,7 +1,7 @@
-use scraper::{Html, Selector};
+use regex::Regex;
 use std::error::Error;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn find_cargo_toml() -> Option<PathBuf> {
     let mut current_dir = std::env::current_dir().ok()?;
@@ -51,58 +51,31 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Read index.html
     match fs::read_to_string(&index_html_path) {
         Ok(html_content) => {
-            use kuchikiki::traits::*;
-
             println!(
                 "Successfully read index.html from: {}",
                 index_html_path.display()
             );
 
-            let document = kuchikiki::parse_html().one(html_content);
+            // Create regex patterns to match the tags we want to remove
+            // Pattern for preload link tags
+            let link_js_regex = Regex::new(
+                r#"<link rel="preload" as="script" href="/\./assets/cv-[a-z0-9]+\.js" crossorigin>"#,
+            )?;
+            let link_wasm_regex = Regex::new(
+                r#"<link rel="preload" as="fetch" type="application/wasm" href="/\./assets/cv_bg-[a-z0-9]+\.wasm" crossorigin>"#,
+            )?;
 
-            for element in document
-                .select("link[rel='preload'][as='script'][href^='/./assets/cv-']")
-                .unwrap()
-            {
-                element.as_node().detach();
-            }
+            // Pattern for the script tag at the bottom
+            let script_pattern = Regex::new(
+                r#"<script>\s*// We can't use a module script.*?wasm\.main\(\);\s*}\s*}\);\s*}\s*\);\s*</script>"#,
+            )?;
 
-            // Remove WASM preload link
-            for element in document
-                .select("link[rel='preload'][as='fetch'][type='application/wasm']")
-                .unwrap()
-            {
-                element.as_node().detach();
-            }
-
-            let script_nodes: Vec<kuchikiki::NodeRef> = document
-                .select("script")
-                .unwrap()
-                .map(|select| select.as_node().clone())
-                .collect();
-
-            for script_node in script_nodes {
-                // Check if it's our initialization script
-                let text_content = script_node.text_contents();
-                if text_content.contains("// We can't use a module script")
-                    && text_content.contains("import(")
-                    && text_content.contains("wasm.main();")
-                {
-                    script_node.detach();
-                }
-
-                // Check for the hydration script
-                if text_content.contains("window.hydrate_queue=[]")
-                    && text_content.contains("window.dx_hydrate=")
-                {
-                    script_node.detach();
-                }
-            }
-
-            let modified_html = document.to_string();
+            // Remove the tags
+            let modified_html = link_js_regex.replace_all(&html_content, "");
+            let modified_html = link_wasm_regex.replace_all(&modified_html, "");
 
             // Write the modified HTML back to the file
-            fs::write(&index_html_path, modified_html)?;
+            fs::write(&index_html_path, modified_html.as_bytes())?;
 
             println!("Successfully removed specified tags from index.html");
 

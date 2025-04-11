@@ -64,3 +64,5 @@ tokio = { version = "1.44.2", features = ["full"] }
 tower-http = { version = "0.6.2", features = ["fs"] }
 scraper = "0.23.1"
 cargo_toml = "0.22.1"
+regex = "1.11.1"
+kuchikiki = "0.8.2"
