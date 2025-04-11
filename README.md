@@ -106,6 +106,11 @@ To locally host the static site:
    simple-http-server target/dx/cv/release/web/public -i
    ```
 
+2.a Serve the built files (windows):
+   ```bash
+   simple-http-server.exe --ip 127.0.0.1 .\target\dx\cv\release\web\public -i
+   ```
+
 ## Customization
 
 - Edit content in component files to update CV information

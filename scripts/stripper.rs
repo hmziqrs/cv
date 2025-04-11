@@ -1,4 +1,4 @@
-use scraper::{Html, Selector};
+use minify_html::{minify, Cfg};
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
@@ -75,33 +75,64 @@ fn main() -> Result<(), Box<dyn Error>> {
                 element.as_node().detach();
             }
 
-            let script_nodes: Vec<kuchikiki::NodeRef> = document
-                .select("script")
-                .unwrap()
-                .map(|select| select.as_node().clone())
-                .collect();
-
-            for script_node in script_nodes {
+            for element in document.select("script").unwrap() {
+                let script_text = element.text_contents();
+                println!(
+                    "tototot : {} | {} \n\n\n",
+                    script_text.contains("initial_dioxus_hydration_data"),
+                    script_text
+                );
                 // Check if it's our initialization script
-                let text_content = script_node.text_contents();
-                if text_content.contains("// We can't use a module script")
-                    && text_content.contains("import(")
-                    && text_content.contains("wasm.main();")
+                if script_text.contains("// We can't use a module script")
+                    && script_text.contains("import(")
+                    && script_text.contains("wasm.main();")
                 {
-                    script_node.detach();
+                    element.as_node().detach();
+                }
+
+                if script_text.contains("initial_dioxus_hydration_data") {
+                    element.as_node().detach();
                 }
 
                 // Check for the hydration script
-                if text_content.contains("window.hydrate_queue=[]")
-                    && text_content.contains("window.dx_hydrate=")
-                {
-                    script_node.detach();
+                if script_text.contains("hydrate_queue") || script_text.contains("dx_hydrate") {
+                    element.as_node().detach();
                 }
             }
 
             let modified_html = document.to_string();
 
-            // Write the modified HTML back to the file
+            // let cfg = Cfg {
+            //     // Allow more aggressive minification techniques
+            //     allow_noncompliant_unquoted_attribute_values: true,
+            //     allow_optimal_entities: true,
+            //     allow_removing_spaces_between_attributes: true,
+
+            //     // Remove optional elements to reduce size
+            //     keep_closing_tags: false,
+            //     keep_comments: false,
+            //     keep_html_and_head_opening_tags: false,
+            //     keep_input_type_text_attr: false,
+            //     keep_ssi_comments: false,
+
+            //     // Enable minification of embedded content
+            //     minify_css: true,
+            //     minify_js: true,
+            //     minify_doctype: true,
+
+            //     // Keep template syntax intact if needed
+            //     preserve_brace_template_syntax: false, // Set to true if using Mustache/Handlebars
+            //     preserve_chevron_percent_template_syntax: false, // Set to true if using EJS/ASP
+
+            //     // Remove unnecessary elements
+            //     remove_bangs: true,
+            //     remove_processing_instructions: true,
+            // };
+
+            // // Minify the HTML
+            // let minified = minify(modified_html.as_bytes(), &cfg);
+
+            // Write the minified HTML back to the file
             fs::write(&index_html_path, modified_html)?;
 
             println!("Successfully removed specified tags from index.html");
