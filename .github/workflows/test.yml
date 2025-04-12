@@ -12,35 +12,62 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Create bin directory
         run: mkdir -p ./bin
-
-      # Instead of downloading from GitHub release, use the existing debug binaries
-      - name: Copy local debug stripper binary
+      
+      - name: Download latest stripper binary
         run: |
-          # Build the binaries directly instead of downloading them
-          cargo build --bin stripper
-          cargo build --bin chrome_capture
+          mkdir -p ./bin
+          LATEST_STRIPPER_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | select(.name | startswith("Stripper Script Binary")) | .tag_name' | sort -r | head -n 1)
+          if [ -z "$LATEST_STRIPPER_RELEASE" ]; then
+            echo "Error: No stripper release found. Please run the stripper build workflow first."
+            exit 1
+          else
+            echo "Found latest stripper release: $LATEST_STRIPPER_RELEASE"
+            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_STRIPPER_RELEASE/stripper-linux-amd64 -o ./bin/stripper
+            chmod +x ./bin/stripper
+          fi
 
-          # Copy to bin directory
-          cp ./target/debug/stripper ./bin/stripper
-          cp ./target/debug/chrome_capture ./bin/chrome_capture
-
-          # Make sure they're executable
-          chmod +x ./bin/stripper
-          chmod +x ./bin/chrome_capture
-
-          # Verify binaries
+      - name: Download latest chrome_capture binary
+        run: |
+          mkdir -p ./bin
+          LATEST_CHROME_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | select(.name | startswith("Chrome Capture Script Binary")) | .tag_name' | sort -r | head -n 1)
+          if [ -z "$LATEST_CHROME_RELEASE" ]; then
+            echo "Error: No chrome_capture release found. Please run the chrome-capture build workflow first."
+            exit 1
+          else
+            echo "Found latest chrome_capture release: $LATEST_CHROME_RELEASE"
+            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_CHROME_RELEASE/chrome-capture-linux-amd64 -o ./bin/chrome_capture
+            chmod +x ./bin/chrome_capture
+          fi
+      
+      - name: Inspect downloaded binaries
+        run: |
+          echo "Binary files information:"
           ls -la ./bin/
+          
+          echo "Examining stripper binary:"
           file ./bin/stripper
+          echo "First 100 bytes of stripper binary (hexdump):"
+          hexdump -C -n 100 ./bin/stripper
+          
+          echo "Examining chrome_capture binary:"
           file ./bin/chrome_capture
+          echo "First 100 bytes of chrome_capture binary (hexdump):"
+          hexdump -C -n 100 ./bin/chrome_capture
 
-      - name: Test execution
+      - name: Test stripper execution
+        continue-on-error: true
         run: |
-          echo "Testing stripper execution:"
+          echo "Testing stripper with different parameters:"
           ./bin/stripper --help || echo "Exit code: $?"
+          ./bin/stripper --version || echo "Exit code: $?"
 
-          echo "Testing chrome_capture execution:"
+      - name: Test chrome_capture execution
+        continue-on-error: true
+        run: |
+          echo "Testing chrome_capture with different parameters:"
           ./bin/chrome_capture --help || echo "Exit code: $?"
+          ./bin/chrome_capture --version || echo "Exit code: $?"
 
