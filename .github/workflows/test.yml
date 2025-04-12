@@ -1,7 +1,9 @@
 name: Test Stripper & Chrome Capture
 
 on:
-  # Allow manual trigger for fast debugging
+  push:
+    paths:
+      - ".github/workflows/test.yml"
   workflow_dispatch:
 
 jobs:
@@ -23,7 +25,8 @@ jobs:
             curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_STRIPPER_RELEASE/stripper-linux-amd64 -o ./bin/stripper
             chmod +x ./bin/stripper
           fi
-
+      - name: ls bin
+        run: ls -la ./bin
       - name: Download latest chrome_capture binary
         run: |
           mkdir -p ./bin
@@ -36,7 +39,8 @@ jobs:
             curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_CHROME_RELEASE/chrome-capture-linux-amd64 -o ./bin/chrome_capture
             chmod +x ./bin/chrome_capture
           fi
-
+      - name: ls bin
+        run: ls -la ./bin
       - name: Test binaries execution
         run: |
           echo "Testing stripper binary:"
