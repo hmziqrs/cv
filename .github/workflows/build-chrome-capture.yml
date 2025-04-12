@@ -117,4 +117,4 @@ jobs:
             ./artifacts/chrome-capture-linux
             ./artifacts/chrome-capture-macos
             ./artifacts/chrome-capture-windows.exe
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}

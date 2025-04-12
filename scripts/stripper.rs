@@ -109,7 +109,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         Err(e) => {
             return Err(format!(
-                "Failed to read index.html at {}: {}",
+                "Failed to read index.html {}: {}",
                 index_html_path.display(),
                 e
             )
