@@ -11,9 +11,14 @@ use tower_http::services::ServeDir;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Define links similar to JavaScript version
+    //
+    let local_port = 3389;
     let mut links = HashMap::new();
     links.insert("prod".to_string(), "https://cv.hmziq.rs".to_string());
-    links.insert("local".to_string(), "http://127.0.0.1:8899".to_string());
+    links.insert(
+        "local".to_string(),
+        format!("http://127.0.0.1:{}", local_port).to_string(),
+    );
     links.insert("dev".to_string(), "http://127.0.0.1:1000".to_string());
 
     // Parse command line arguments
@@ -31,8 +36,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         // Start the server
-        let (tx, server_handle) = start_server(static_dir, 8899).await?;
-        println!("Local server started on port 8899");
+        let (tx, server_handle) = start_server(static_dir, local_port).await?;
+        println!("Local server started on port {}", local_port);
 
         // Spawn the server task
         tokio::spawn(server_handle);

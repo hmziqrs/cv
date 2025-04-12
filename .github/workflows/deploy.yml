@@ -44,8 +44,11 @@ jobs:
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install Dioxus CLI
-        run: cargo install dioxus-cli
+      - name: Install cargo-binstall
+        run: cargo install cargo-binstall
+
+      - name: Install Dioxus CLI binary
+        run: cargo binstall dioxus-cli
 
       - name: Build static site
         run: dx build --platform web --release --ssg
