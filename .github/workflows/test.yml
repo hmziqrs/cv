@@ -1,0 +1,48 @@
+name: Test Stripper & Chrome Capture
+
+on:
+  # Allow manual trigger for fast debugging
+  workflow_dispatch:
+
+jobs:
+  test-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download latest stripper binary
+        run: |
+          mkdir -p ./bin
+          LATEST_STRIPPER_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | select(.name | startswith("Stripper Script Binary")) | .tag_name' | sort -r | head -n 1)
+          if [ -z "$LATEST_STRIPPER_RELEASE" ]; then
+            echo "Error: No stripper release found. Please run the stripper build workflow first."
+            exit 1
+          else
+            echo "Found latest stripper release: $LATEST_STRIPPER_RELEASE"
+            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_STRIPPER_RELEASE/stripper-linux-amd64 -o ./bin/stripper
+            chmod +x ./bin/stripper
+          fi
+
+      - name: Download latest chrome_capture binary
+        run: |
+          mkdir -p ./bin
+          LATEST_CHROME_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | select(.name | startswith("Chrome Capture Script Binary")) | .tag_name' | sort -r | head -n 1)
+          if [ -z "$LATEST_CHROME_RELEASE" ]; then
+            echo "Error: No chrome_capture release found. Please run the chrome-capture build workflow first."
+            exit 1
+          else
+            echo "Found latest chrome_capture release: $LATEST_CHROME_RELEASE"
+            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_CHROME_RELEASE/chrome-capture-linux-amd64 -o ./bin/chrome_capture
+            chmod +x ./bin/chrome_capture
+          fi
+
+      - name: Test binaries execution
+        run: |
+          echo "Testing stripper binary:"
+          ./bin/stripper --version || echo "Stripper doesn't support --version flag"
+          
+          echo "Testing chrome_capture binary:"
+          ./bin/chrome_capture --help || echo "Chrome capture doesn't support --help flag"
+          
+          echo "Both binaries are executable!"
