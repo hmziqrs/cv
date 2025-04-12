@@ -7,6 +7,10 @@ name: Deploy Rust CV to Pages
 on:
   push:
     branches: ["master"]
+    paths-ignore:
+      - 'scripts/**'
+      - '.github/workflows/build-stripper.yml'
+      - '.github/workflows/build-chrome-capture.yml'
   workflow_dispatch:
 
 permissions:
@@ -52,12 +56,38 @@ jobs:
 
       - name: Build static site
         run: dx build --platform web --release --ssg
+      
+      - name: Download latest stripper binary
+        run: |
+          mkdir -p ./bin
+          LATEST_STRIPPER_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | select(.name | startswith("Stripper Script Binary")) | .tag_name' | sort -r | head -n 1)
+          if [ -z "$LATEST_STRIPPER_RELEASE" ]; then
+            echo "Error: No stripper release found. Please run the stripper build workflow first."
+            exit 1
+          else
+            echo "Found latest stripper release: $LATEST_STRIPPER_RELEASE"
+            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_STRIPPER_RELEASE/stripper-linux-amd64 -o ./bin/stripper
+            chmod +x ./bin/stripper
+          fi
 
-      - name: Optimize HTML with stripper script
-        run: cargo run --bin stripper
+      - name: Download latest chrome_capture binary
+        run: |
+          mkdir -p ./bin
+          LATEST_CHROME_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | select(.name | startswith("Chrome Capture Script Binary")) | .tag_name' | sort -r | head -n 1)
+          if [ -z "$LATEST_CHROME_RELEASE" ]; then
+            echo "Error: No chrome_capture release found. Please run the chrome-capture build workflow first."
+            exit 1
+          else
+            echo "Found latest chrome_capture release: $LATEST_CHROME_RELEASE"
+            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_CHROME_RELEASE/chrome-capture-linux-amd64 -o ./bin/chrome_capture
+            chmod +x ./bin/chrome_capture
+          fi
+
+      - name: Optimize HTML with stripper
+        run: ./bin/stripper
 
       - name: Take CV snapshots
-        run: cargo run --bin chrome_capture local
+        run: ./bin/chrome_capture local
 
       - name: Copy CV files to build directory
         run: |
