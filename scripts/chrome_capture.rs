@@ -58,6 +58,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let options = LaunchOptionsBuilder::default()
         .headless(true)
         .port(Some(3000))
+        .sandbox(false)
         .window_size(Some((1280, 1080)))
         .build()?;
 
