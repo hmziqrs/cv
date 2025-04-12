@@ -72,6 +72,36 @@ A legacy version of the HTML cleanup tool that uses regex patterns to remove spe
 - **hmziq-dioxus-free-icons**: Icon component library
 - **Static Site Generation**: Pre-rendered HTML for better performance
 
+## Deployment
+
+This project uses GitHub Actions for automated deployment. The deployment pipeline builds the site, optimizes the output, generates PDF/JPEG versions of the CV, and deploys to multiple platforms.
+
+### Deployment Infrastructure
+
+- **GitHub Pages**: Primary hosting for the static site
+- **Cloudflare Pages**: Secondary deployment location for enhanced performance
+- **GitHub Actions**: CI/CD pipeline automation
+
+### Deployment Workflow
+
+The deployment process is managed through several GitHub Actions workflows:
+
+1. **Deploy (`deploy.yml`)**: Main deployment workflow that:
+   - Builds the site with Dioxus and Tailwind CSS
+   - Downloads the latest utility binaries (stripper and chrome_capture)
+   - Optimizes HTML output with the stripper tool
+   - Generates PDF and JPEG versions of the CV
+   - Deploys to both GitHub Pages and Cloudflare Pages
+   - Uploads PDF/JPEG artifacts for download
+
+2. **Build Tools**: Separate workflows that build and release the utility scripts:
+   - `build-stripper.yml`: Builds the HTML optimization tool for multiple platforms
+   - `build-chrome-capture.yml`: Builds the PDF/JPEG generation tool for multiple platforms
+
+### Running Deployments Manually
+
+You can trigger a manual deployment through the GitHub Actions interface by selecting the "Deploy Rust CV to Pages" workflow and clicking "Run workflow".
+
 ## Getting Started
 
 ### Prerequisites
