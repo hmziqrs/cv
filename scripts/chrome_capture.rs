@@ -88,7 +88,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let jpeg_height = get_content_height(&tab)?;
 
-    tab.close(false)?;
+    tab.close(true)?;
 
     let jpeg_options = LaunchOptionsBuilder::default()
         .headless(true)

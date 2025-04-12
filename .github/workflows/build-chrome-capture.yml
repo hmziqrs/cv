@@ -3,17 +3,17 @@ name: Build and Release Chrome Capture Binary
 on:
   push:
     paths:
-      - 'scripts/chrome_capture.rs'
-      - '.github/workflows/build-chrome-capture.yml'
+      - "scripts/chrome_capture.rs"
+      - ".github/workflows/build-chrome-capture.yml"
   workflow_dispatch:
-
 jobs:
   build:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
+        # os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
             artifact_name: chrome-capture-linux
@@ -21,9 +21,9 @@ jobs:
           - os: macos-latest
             artifact_name: chrome-capture-macos
             asset_name: chrome-capture-macos-amd64
-          - os: windows-latest
-            artifact_name: chrome-capture-windows.exe
-            asset_name: chrome-capture-windows-amd64.exe
+          # - os: windows-latest
+          #   artifact_name: chrome-capture-windows.exe
+          #   asset_name: chrome-capture-windows-amd64.exe
 
     steps:
       - name: Checkout code
@@ -33,7 +33,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          
+
       # Install Chrome dependencies on Ubuntu
       - name: Install dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
@@ -42,17 +42,17 @@ jobs:
           sudo apt-get install -y libx11-xcb1 libxcomposite1 libxcursor1 libxdamage1 \
             libxi6 libxtst6 libnss3 libcups2 libxss1 libxrandr2 libasound2 libpango1.0-0 \
             libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
-            
+
       # Install Chrome on all platforms
       - name: Install Chrome
         uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: stable
-          
+
       - name: Build binary
         run: |
           cargo build --release --bin chrome_capture
-          
+
       - name: Copy binary to artifact location
         shell: bash
         run: |
@@ -68,76 +68,53 @@ jobs:
         with:
           name: ${{ matrix.asset_name }}
           path: ./artifacts/${{ matrix.artifact_name }}
-          
+
   release:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
     if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Set version
         id: version
         run: |
           echo "version=chrome-capture-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
-          
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: Chrome Capture Script Binary ${{ steps.version.outputs.version }}
-          draft: false
-          prerelease: false
-          
+
       - name: Download Linux Artifact
         uses: actions/download-artifact@v4
         with:
           name: chrome-capture-linux-amd64
           path: ./artifacts
-          
+
       - name: Download macOS Artifact
         uses: actions/download-artifact@v4
         with:
           name: chrome-capture-macos-amd64
           path: ./artifacts
-          
+
       - name: Download Windows Artifact
         uses: actions/download-artifact@v4
         with:
           name: chrome-capture-windows-amd64.exe
           path: ./artifacts
-          
-      - name: Upload Linux Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/chrome-capture-linux
-          asset_name: chrome-capture-linux-amd64
-          asset_content_type: application/octet-stream
-          
-      - name: Upload macOS Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/chrome-capture-macos
-          asset_name: chrome-capture-macos-amd64
-          asset_content_type: application/octet-stream
-          
-      - name: Upload Windows Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/chrome-capture-windows.exe
-          asset_name: chrome-capture-windows-amd64.exe
-          asset_content_type: application/octet-stream
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Chrome Capture Script Binary ${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            ./artifacts/chrome-capture-linux
+            ./artifacts/chrome-capture-macos
+            # ./artifacts/chrome-capture-windows.exe
+          token: ${{ secrets.GITHUB_TOKEN }}
