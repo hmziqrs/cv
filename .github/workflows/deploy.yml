@@ -67,7 +67,8 @@ jobs:
             exit 1
           else
             echo "Found latest stripper release: $LATEST_STRIPPER_RELEASE"
-            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_STRIPPER_RELEASE/stripper-linux-amd64 -o ./bin/stripper
+            # Updated filename from stripper-linux-amd64 to stripper-linux
+            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_STRIPPER_RELEASE/stripper-linux -o ./bin/stripper
             chmod +x ./bin/stripper
           fi
 
@@ -80,7 +81,8 @@ jobs:
             exit 1
           else
             echo "Found latest chrome_capture release: $LATEST_CHROME_RELEASE"
-            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_CHROME_RELEASE/chrome-capture-linux-amd64 -o ./bin/chrome_capture
+            # Updated filename from chrome-capture-linux-amd64 to chrome-capture-linux
+            curl -L https://github.com/${{ github.repository }}/releases/download/$LATEST_CHROME_RELEASE/chrome-capture-linux -o ./bin/chrome_capture
             chmod +x ./bin/chrome_capture
           fi
 
