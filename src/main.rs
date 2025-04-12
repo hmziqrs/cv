@@ -1,4 +1,4 @@
-use dioxus::prelude::*;
+use dioxus::{logger::tracing, prelude::*};
 
 pub mod components;
 mod metadata;
@@ -6,22 +6,20 @@ pub mod router;
 pub mod screens;
 
 fn main() {
+    eprintln!("E PRINT MAIN");
+    router::create_sitemap();
+
     // dioxus::launch(App);
     dioxus::LaunchBuilder::new()
         // Set the server config only if we are building the server target
         .with_cfg(server_only! {
+            eprintln!("SERVER ONLY CFG");
             ServeConfig::builder()
                 // Enable incremental rendering
                 .incremental(
                     IncrementalRendererConfig::new()
                         // Store static files in the public directory where other static assets like wasm are stored
-                        .static_dir(
-                            std::env::current_exe()
-                                .unwrap()
-                                .parent()
-                                .unwrap()
-                                .join("public")
-                        )
+                        .static_dir(router::static_dir())
                         // Don't clear the public folder on every build. The public folder has other files including the wasm
                         // binary and static assets required for the app to run
                         .clear_cache(false)

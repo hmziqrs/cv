@@ -12,6 +12,7 @@ hmziq-dioxus-free-icons = { version = "0.9.2", features = [
     "lucide",
 ] }
 serde_json = "1.0.140"
+askama_escape = { version = "0.10.3", optional = true }
 
 [dev-dependencies]
 headless_chrome = { git = "https://github.com/rust-headless-chrome/rust-headless-chrome", features = [
@@ -23,7 +24,7 @@ default = ["web"]
 web = ["dioxus/web"]
 desktop = ["dioxus/desktop"]
 mobile = ["dioxus/mobile"]
-server = ["dioxus/server"]
+server = ["dioxus/server", "dioxus/ssr", "dep:askama_escape"]
 
 [profile]
 
