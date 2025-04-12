@@ -92,6 +92,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let jpeg_options = LaunchOptionsBuilder::default()
         .headless(true)
+        .sandbox(false)
         .window_size(Some((1280, jpeg_height as u32)))
         .build()?;
 
