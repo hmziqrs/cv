@@ -1,77 +1,46 @@
-name: Debug Binary Downloads
+name: Test Binary Execution
 
 on:
   push:
     paths:
-      - ".github/workflows/test.yml"
+      - '.github/workflows/test.yml'
   workflow_dispatch:
 
 jobs:
-  debug-binary-downloads:
+  test-execution:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
-      - name: List all GitHub releases
-        run: |
-          echo "All GitHub releases:"
-          curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[].name'
 
-      - name: List all release assets
-        run: |
-          echo "All assets in all releases:"
-          curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | {name: .name, tag: .tag_name, assets: [.assets[].name]}'
+      - name: Create bin directory
+        run: mkdir -p ./bin
 
-      - name: Create download directory
-        run: mkdir -p ./debug-downloads
-      
-      - name: Debug stripper download
+      # Instead of downloading from GitHub release, use the existing debug binaries
+      - name: Copy local debug stripper binary
         run: |
-          # Get actual download URL of stripper asset
-          STRIPPER_RELEASES=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | select(.name | startswith("Stripper Script Binary"))')
-          echo "Raw stripper release info:"
-          echo "$STRIPPER_RELEASES" | jq '.'
-          
-          # Extract actual download URLs
-          STRIPPER_DOWNLOAD_URLS=$(echo "$STRIPPER_RELEASES" | jq -r '.assets[] | {name: .name, url: .browser_download_url}')
-          echo "Download URLs for stripper assets:"
-          echo "$STRIPPER_DOWNLOAD_URLS" | jq '.'
-          
-          # Try direct download with verbose output
-          echo "Trying direct curl download with -v flag:"
-          DOWNLOAD_URL=$(echo "$STRIPPER_DOWNLOAD_URLS" | jq -r 'select(.name == "stripper-linux-amd64") | .url' | head -1)
-          if [ -n "$DOWNLOAD_URL" ]; then
-            echo "Downloading from: $DOWNLOAD_URL"
-            curl -v -L -H "Accept: application/octet-stream" "$DOWNLOAD_URL" > ./debug-downloads/stripper
-            ls -la ./debug-downloads/stripper
-            file ./debug-downloads/stripper
-            cat ./debug-downloads/stripper
-          else
-            echo "No download URL found for stripper-linux-amd64"
-          fi
-      
-      - name: Debug chrome_capture download
+          # Build the binaries directly instead of downloading them
+          cargo build --bin stripper
+          cargo build --bin chrome_capture
+
+          # Copy to bin directory
+          cp ./target/debug/stripper ./bin/stripper
+          cp ./target/debug/chrome_capture ./bin/chrome_capture
+
+          # Make sure they're executable
+          chmod +x ./bin/stripper
+          chmod +x ./bin/chrome_capture
+
+          # Verify binaries
+          ls -la ./bin/
+          file ./bin/stripper
+          file ./bin/chrome_capture
+
+      - name: Test execution
         run: |
-          # Get actual download URL of chrome_capture asset
-          CHROME_RELEASES=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r '.[] | select(.name | startswith("Chrome Capture Script Binary"))')
-          echo "Raw chrome_capture release info:"
-          echo "$CHROME_RELEASES" | jq '.'
-          
-          # Extract actual download URLs
-          CHROME_DOWNLOAD_URLS=$(echo "$CHROME_RELEASES" | jq -r '.assets[] | {name: .name, url: .browser_download_url}')
-          echo "Download URLs for chrome_capture assets:"
-          echo "$CHROME_DOWNLOAD_URLS" | jq '.'
-          
-          # Try direct download with verbose output
-          echo "Trying direct curl download with -v flag:"
-          DOWNLOAD_URL=$(echo "$CHROME_DOWNLOAD_URLS" | jq -r 'select(.name == "chrome-capture-linux-amd64") | .url' | head -1)
-          if [ -n "$DOWNLOAD_URL" ]; then
-            echo "Downloading from: $DOWNLOAD_URL"
-            curl -v -L -H "Accept: application/octet-stream" "$DOWNLOAD_URL" > ./debug-downloads/chrome_capture
-            ls -la ./debug-downloads/chrome_capture
-            file ./debug-downloads/chrome_capture
-            cat ./debug-downloads/chrome_capture
-          else
-            echo "No download URL found for chrome-capture-linux-amd64"
-          fi
+          echo "Testing stripper execution:"
+          ./bin/stripper --help || echo "Exit code: $?"
+
+          echo "Testing chrome_capture execution:"
+          ./bin/chrome_capture --help || echo "Exit code: $?"
+
