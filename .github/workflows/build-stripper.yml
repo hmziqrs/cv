@@ -1,0 +1,128 @@
+name: Build and Release Stripper Binary
+
+on:
+  push:
+    paths:
+      - 'scripts/stripper.rs'
+      - '.github/workflows/build-stripper.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            artifact_name: stripper-linux
+            asset_name: stripper-linux-amd64
+          - os: macos-latest
+            artifact_name: stripper-macos
+            asset_name: stripper-macos-amd64
+          - os: windows-latest
+            artifact_name: stripper-windows.exe
+            asset_name: stripper-windows-amd64.exe
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          
+      - name: Build binary
+        run: |
+          cargo build --release --bin stripper
+          
+      - name: Copy binary to artifact location
+        shell: bash
+        run: |
+          mkdir -p ./artifacts/
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            cp target/release/stripper.exe ./artifacts/${{ matrix.artifact_name }}
+          else
+            cp target/release/stripper ./artifacts/${{ matrix.artifact_name }}
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: ./artifacts/${{ matrix.artifact_name }}
+          
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set version
+        id: version
+        run: |
+          echo "version=stripper-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+          
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: Stripper Script Binary ${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: false
+          
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: stripper-linux-amd64
+          path: ./artifacts
+          
+      - name: Download macOS Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: stripper-macos-amd64
+          path: ./artifacts
+          
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: stripper-windows-amd64.exe
+          path: ./artifacts
+          
+      - name: Upload Linux Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/stripper-linux
+          asset_name: stripper-linux-amd64
+          asset_content_type: application/octet-stream
+          
+      - name: Upload macOS Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/stripper-macos
+          asset_name: stripper-macos-amd64
+          asset_content_type: application/octet-stream
+          
+      - name: Upload Windows Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/stripper-windows.exe
+          asset_name: stripper-windows-amd64.exe
+          asset_content_type: application/octet-stream
