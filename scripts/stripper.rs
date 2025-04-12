@@ -1,4 +1,3 @@
-use lightningcss::stylesheet::{ParserOptions, StyleSheet};
 use minify_html::{minify, Cfg};
 use regex::Regex;
 use std::error::Error;
@@ -50,17 +49,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Construct path to index.html
     let index_html_path = public_root.join("index.html");
-    let assets_dir = public_root.join("assets");
 
     // Read index.html
     match fs::read_to_string(&index_html_path) {
         Ok(html_content) => {
             use kuchikiki::traits::*;
 
-            println!(
-                "Successfully read index.html from: {}",
-                index_html_path.display()
-            );
+            println!("Successfully read index.html");
 
             let document = kuchikiki::parse_html().one(html_content);
 
@@ -78,36 +73,28 @@ fn main() -> Result<(), Box<dyn Error>> {
             {
                 element.as_node().detach();
             }
+            let script_text = vec![
+                "// We can't use a module script",
+                "initial_dioxus_hydration_data",
+                "hydrate_queue",
+                "dx_hydrate",
+            ];
+            for text in script_text.iter() {
+                for element in document.select("script").unwrap() {
+                    println!("Script search");
 
-            for element in document.select("script").unwrap() {
-                let script_text = element.text_contents();
-                println!(
-                    "tototot : {} | {} \n\n\n",
-                    script_text.contains("initial_dioxus_hydration_data"),
-                    script_text
-                );
-                // Check if it's our initialization script
-                if script_text.contains("// We can't use a module script")
-                    && script_text.contains("import(")
-                    && script_text.contains("wasm.main();")
-                {
-                    element.as_node().detach();
-                }
-
-                if script_text.contains("initial_dioxus_hydration_data") {
-                    element.as_node().detach();
-                }
-
-                // Check for the hydration script
-                if script_text.contains("hydrate_queue") || script_text.contains("dx_hydrate") {
-                    element.as_node().detach();
+                    if element.text_contents().contains(text) {
+                        element.as_node().detach();
+                    }
                 }
             }
 
             let modified_html = document.to_string();
+            // fs::write(&index_html_path, modified_html)?;
 
             let hydration_node_regex =
                 Regex::new(r#"\s*data-node-hydration=["']?\d+["']?"#).unwrap();
+
             let cleaned_html = hydration_node_regex
                 .replace_all(&modified_html, "")
                 .to_string();
@@ -129,36 +116,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             .into());
         }
     }
-
-    // for entry in fs::read_dir(assets_dir).unwrap() {
-    //     let entry = entry?;
-    //     let path = entry.path();
-    //     if path.is_file() {
-    //         let name = path.file_name().unwrap().to_string_lossy().to_string();
-
-    //         if name.starts_with("tailwind") && name.ends_with(".css") {
-    //             let css_content = fs::read_to_string(&path)?;
-
-    //             let mut stylesheet = StyleSheet::parse(
-    //                 &css_content,
-    //                 ParserOptions {
-    //                     filename: name,
-    //                     ..ParserOptions::default()
-    //                 },
-    //             )
-    //             .map_err(|e| format!("Failed to parse CSS: {:?}", e))
-    //             .unwrap();
-
-    //             stylesheet
-    //                 .minify(lightningcss::stylesheet::MinifyOptions {
-    //                     ..Default::default()
-    //                 })
-    //                 .map_err(|e| format!("Failed to minify CSS: {:?}", e))?;
-
-    //             fs::write(path, serde_json::to_string(&stylesheet).unwrap());
-    //         }
-    //     }
-    // }
 
     Ok(())
 }
