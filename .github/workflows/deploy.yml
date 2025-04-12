@@ -11,7 +11,7 @@ on:
       - 'scripts/**'
       - '.github/workflows/build-stripper.yml'
       - '.github/workflows/build-chrome-capture.yml'
-      - '.github/workflows/testing.yml'
+      - '.github/workflows/test.yml'
   workflow_dispatch:
 
 permissions:
