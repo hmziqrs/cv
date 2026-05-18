@@ -51,7 +51,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install Dioxus CLI
-        run: curl -sSL https://dioxus.dev/install.sh | sh
+        run: curl -sSL https://dioxus.dev/install.sh | bash
 
       - name: Build static site
         run: dx build --platform web --release --ssg
