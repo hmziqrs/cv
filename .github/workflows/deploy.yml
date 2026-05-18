@@ -98,6 +98,11 @@ jobs:
           cp public/files/hmziqrs-light-cv.jpg target/dx/cv/release/web/public/files/hmziqrs-light-cv.jpg
           cp public/files/hmziqrs-light-cv.pdf target/dx/cv/release/web/public/files/hmziqrs-light-cv.pdf
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
       - name: Deploy cloudflare pages
         uses: cloudflare/wrangler-action@v4
         with:
