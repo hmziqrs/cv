@@ -3,7 +3,7 @@ use hmziq_dioxus_free_icons::icons::ld_icons::{
     LdBox, LdGlobe, LdLayoutGrid, LdMonitorSmartphone, LdSmartphone, LdTerminal,
 };
 use hmziq_dioxus_free_icons::icons::si_icons::{SiAppstore, SiGithub, SiGoogleplay};
-use hmziq_dioxus_free_icons::{Icon, IconShape};
+use hmziq_dioxus_free_icons::Icon;
 
 // Project types and data structures
 pub struct Project {

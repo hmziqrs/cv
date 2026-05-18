@@ -1,4 +1,5 @@
-use dioxus::{logger::tracing, prelude::*};
+#![allow(non_snake_case)]
+use dioxus::prelude::*;
 
 pub mod components;
 mod metadata;

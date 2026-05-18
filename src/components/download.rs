@@ -36,6 +36,8 @@ fn get_download() -> Vec<Download> {
 }
 
 pub fn AppDownload() -> Element {
+    let downloads = get_download();
+
     rsx! {
         div {
             class: "flex bg-zinc-100 dark:bg-zinc-900 print:hidden jpeg",
@@ -49,7 +51,7 @@ pub fn AppDownload() -> Element {
                 div {
                     class: "flex flex-row flex-wrap gap-4",
                     {
-                        get_download().iter().map(|download| {
+                        downloads.iter().map(|download| {
                             rsx! {
                                 a {
                                     key: "{download.filename}",

@@ -19,7 +19,7 @@ use hmziq_dioxus_free_icons::icons::si_icons::{
     SiX,
     SiYoutube,
 };
-use hmziq_dioxus_free_icons::{Icon, IconShape};
+use hmziq_dioxus_free_icons::Icon;
 
 pub struct SocialLink {
     pub href: String,

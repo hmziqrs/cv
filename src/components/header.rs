@@ -9,18 +9,19 @@ use hmziq_dioxus_free_icons::{Icon, IconShape};
 pub trait IconWithExtra: IconShape + Clone + PartialEq {}
 impl<T> IconWithExtra for T where T: IconShape + Clone + PartialEq {}
 
-pub enum SocialLinkIcon {
+#[allow(dead_code)]
+enum SocialLinkIcon {
     Gmail,
     Telegram,
     X,
     Linkedin,
 }
 
-pub struct SocialLink {
-    pub href: String,
-    pub icon: Element,
-    pub label: String,
-    pub target: Option<String>,
+struct SocialLink {
+    href: String,
+    icon: Element,
+    label: String,
+    target: Option<String>,
 }
 
 pub struct Header {

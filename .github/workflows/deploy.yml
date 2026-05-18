@@ -25,16 +25,17 @@ concurrency:
 
 env:
   ENV_VARS: ${{ vars.ENV_VARS }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -101,34 +102,34 @@ jobs:
           cp public/files/hmziqrs-light-cv.pdf target/dx/cv/release/web/public/files/hmziqrs-light-cv.pdf
 
       - name: Deploy cloudflare pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy ./target/dx/cv/release/web/public --project-name=hmziqrs-cv --branch=main
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: "hmziqrs-dark-cv.jpg"
           path: "public/files/hmziqrs-dark-cv.jpg"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: "hmziqrs-dark-cv.pdf"
           path: "public/files/hmziqrs-dark-cv.pdf"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: "hmziqrs-light-cv.jpg"
           path: "public/files/hmziqrs-light-cv.jpg"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: "hmziqrs-light-cv.pdf"
           path: "public/files/hmziqrs-light-cv.pdf"
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./target/dx/cv/release/web/public
 
@@ -143,4 +144,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

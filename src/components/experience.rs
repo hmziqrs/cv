@@ -7,7 +7,7 @@ use hmziq_dioxus_free_icons::icons::si_icons::{
     SiFlutter, SiGo, SiGooglechrome, SiGoogledrive, SiMaterialdesign, SiMysql, SiNodedotjs,
     SiPostgresql, SiReact, SiRedux, SiStyledcomponents, SiTypescript, SiWebpack,
 };
-use hmziq_dioxus_free_icons::{Icon, IconShape};
+use hmziq_dioxus_free_icons::Icon;
 use std::collections::HashMap;
 
 pub struct TechItem {
