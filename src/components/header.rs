@@ -4,18 +4,7 @@ use dioxus::prelude::*;
 use chrono::{Datelike, Utc};
 use hmziq_dioxus_free_icons::icons::ld_icons::LdGlobe;
 use hmziq_dioxus_free_icons::icons::si_icons::{SiGmail, SiTelegram, SiX};
-use hmziq_dioxus_free_icons::{Icon, IconShape};
-
-pub trait IconWithExtra: IconShape + Clone + PartialEq {}
-impl<T> IconWithExtra for T where T: IconShape + Clone + PartialEq {}
-
-#[allow(dead_code)]
-enum SocialLinkIcon {
-    Gmail,
-    Telegram,
-    X,
-    Linkedin,
-}
+use hmziq_dioxus_free_icons::Icon;
 
 struct SocialLink {
     href: String,
@@ -24,14 +13,14 @@ struct SocialLink {
     target: Option<String>,
 }
 
-pub struct Header {
-    pub links: Vec<SocialLink>,
-    pub name: String,
-    pub title: String,
-    pub intro: Vec<String>,
+struct Header {
+    links: Vec<SocialLink>,
+    name: String,
+    title: String,
+    intro: Vec<String>,
 }
 
-pub fn get_header() -> Header {
+fn get_header() -> Header {
     let current_year = Utc::now().year() as usize;
     let years_experience = current_year - 2017;
 

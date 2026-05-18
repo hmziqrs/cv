@@ -21,14 +21,9 @@ fn find_cargo_toml() -> Option<PathBuf> {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cargo_toml_path = find_cargo_toml().ok_or("Could not find Cargo.toml file")?;
-    let content = fs::read_to_string(&cargo_toml_path)?;
-    let parsed_toml: cargo_toml::Value = content.parse()?;
+    let manifest = cargo_toml::Manifest::from_path(&cargo_toml_path)?;
 
-    let package_name = parsed_toml
-        .get("package")
-        .and_then(|p| p.get("name"))
-        .and_then(|n| n.as_str())
-        .ok_or("Failed to find package name in Cargo.toml")?;
+    let package_name = &manifest.package().name;
 
     println!("Package name: {}", package_name);
 
